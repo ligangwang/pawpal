@@ -1,0 +1,378 @@
+{
+  "id": "pawpal",
+  "version": "1.0.0",
+  "title": {
+    "en": "Pawpal",
+    "zh": "萌宠伙伴"
+  },
+  "description": {
+    "en": "Hatch a puppy, kitten, fox or dragon and raise it day by day: feed, play, bathe and pet it, play mini-games together for treats and coins, and dress it up and decorate its room.",
+    "zh": "孵出小狗、小猫、狐狸或小龙，一天天把它养大：喂食、玩耍、洗澡、抚摸，一起玩小游戏赢零食和金币，还能给它换装、布置房间。"
+  },
+  "entry": "index.html",
+  "badges": [
+    {
+      "id": "hatched",
+      "tier": "bronze",
+      "icon": "heart",
+      "title": {
+        "en": "Hatch your pet",
+        "zh": "孵出你的宠物"
+      }
+    },
+    {
+      "id": "kid",
+      "tier": "bronze",
+      "icon": "star",
+      "title": {
+        "en": "Raise your pet into a kid",
+        "zh": "把宠物养成小朋友"
+      }
+    },
+    {
+      "id": "grown",
+      "tier": "silver",
+      "icon": "crown",
+      "title": {
+        "en": "Raise your pet all the way up",
+        "zh": "把宠物养大"
+      }
+    },
+    {
+      "id": "streak-3",
+      "tier": "bronze",
+      "icon": "clock",
+      "title": {
+        "en": "Care for your pet 3 days in a row",
+        "zh": "连续 3 天照顾宠物"
+      }
+    },
+    {
+      "id": "streak-7",
+      "tier": "silver",
+      "icon": "clock",
+      "title": {
+        "en": "Care for your pet 7 days in a row",
+        "zh": "连续 7 天照顾宠物"
+      }
+    },
+    {
+      "id": "streak-30",
+      "tier": "gold",
+      "icon": "clock",
+      "title": {
+        "en": "Care for your pet 30 days in a row",
+        "zh": "连续 30 天照顾宠物"
+      }
+    },
+    {
+      "id": "joyful",
+      "tier": "bronze",
+      "icon": "heart",
+      "title": {
+        "en": "Make your pet joyful",
+        "zh": "让宠物超开心"
+      }
+    },
+    {
+      "id": "catch-20",
+      "tier": "bronze",
+      "icon": "target",
+      "title": {
+        "en": "Catch 20 treats in one round",
+        "zh": "一局接住 20 份零食"
+      }
+    },
+    {
+      "id": "catch-40",
+      "tier": "silver",
+      "icon": "target",
+      "title": {
+        "en": "Catch 40 treats in one round",
+        "zh": "一局接住 40 份零食"
+      }
+    },
+    {
+      "id": "seek-5",
+      "tier": "bronze",
+      "icon": "star",
+      "title": {
+        "en": "Find your pet 5 times in a row",
+        "zh": "连续 5 次找到宠物"
+      }
+    },
+    {
+      "id": "seek-10",
+      "tier": "silver",
+      "icon": "stars",
+      "title": {
+        "en": "Find your pet 10 times in a row",
+        "zh": "连续 10 次找到宠物"
+      }
+    },
+    {
+      "id": "dance-6",
+      "tier": "bronze",
+      "icon": "bolt",
+      "title": {
+        "en": "Copy a 6-move dance",
+        "zh": "跟跳 6 个舞步"
+      }
+    },
+    {
+      "id": "dance-10",
+      "tier": "silver",
+      "icon": "bolt",
+      "title": {
+        "en": "Copy a 10-move dance",
+        "zh": "跟跳 10 个舞步"
+      }
+    },
+    {
+      "id": "dress-up",
+      "tier": "bronze",
+      "icon": "star",
+      "title": {
+        "en": "Dress up your pet",
+        "zh": "给宠物换装"
+      }
+    },
+    {
+      "id": "decorator",
+      "tier": "bronze",
+      "icon": "trophy",
+      "title": {
+        "en": "Place 3 decorations in the room",
+        "zh": "在房间放 3 件装饰"
+      }
+    }
+  ],
+  "shop": [
+    {
+      "id": "pet-fox",
+      "price": 200,
+      "title": {
+        "en": "Fox egg",
+        "zh": "狐狸蛋"
+      }
+    },
+    {
+      "id": "pet-dragon",
+      "price": 400,
+      "title": {
+        "en": "Dragon egg",
+        "zh": "小龙蛋"
+      }
+    },
+    {
+      "id": "outfit-bow",
+      "price": 40,
+      "title": {
+        "en": "Ribbon bow",
+        "zh": "蝴蝶结"
+      }
+    },
+    {
+      "id": "outfit-scarf",
+      "price": 60,
+      "title": {
+        "en": "Cozy scarf",
+        "zh": "温暖围巾"
+      }
+    },
+    {
+      "id": "outfit-cap",
+      "price": 80,
+      "title": {
+        "en": "Sun cap",
+        "zh": "遮阳帽"
+      }
+    },
+    {
+      "id": "outfit-glasses",
+      "price": 90,
+      "title": {
+        "en": "Round glasses",
+        "zh": "圆眼镜"
+      }
+    },
+    {
+      "id": "outfit-flowers",
+      "price": 120,
+      "title": {
+        "en": "Flower crown",
+        "zh": "花环"
+      }
+    },
+    {
+      "id": "outfit-cape",
+      "price": 180,
+      "title": {
+        "en": "Hero cape",
+        "zh": "英雄披风"
+      }
+    },
+    {
+      "id": "outfit-wizard",
+      "price": 220,
+      "title": {
+        "en": "Wizard hat",
+        "zh": "魔法帽"
+      }
+    },
+    {
+      "id": "outfit-crown",
+      "price": 400,
+      "title": {
+        "en": "Golden crown",
+        "zh": "金色王冠"
+      }
+    },
+    {
+      "id": "decor-rug",
+      "price": 40,
+      "title": {
+        "en": "Round rug",
+        "zh": "圆地毯"
+      }
+    },
+    {
+      "id": "decor-plant",
+      "price": 60,
+      "title": {
+        "en": "Potted plant",
+        "zh": "盆栽"
+      }
+    },
+    {
+      "id": "decor-painting",
+      "price": 80,
+      "title": {
+        "en": "Sunny painting",
+        "zh": "阳光挂画"
+      }
+    },
+    {
+      "id": "decor-lamp",
+      "price": 100,
+      "title": {
+        "en": "Reading lamp",
+        "zh": "落地灯"
+      }
+    },
+    {
+      "id": "decor-toybox",
+      "price": 120,
+      "title": {
+        "en": "Toy box",
+        "zh": "玩具箱"
+      }
+    },
+    {
+      "id": "decor-fishbowl",
+      "price": 150,
+      "title": {
+        "en": "Fish bowl",
+        "zh": "鱼缸"
+      }
+    },
+    {
+      "id": "decor-lights",
+      "price": 200,
+      "title": {
+        "en": "Fairy lights",
+        "zh": "星星灯串"
+      }
+    },
+    {
+      "id": "decor-cloudbed",
+      "price": 300,
+      "title": {
+        "en": "Cloud bed",
+        "zh": "云朵床"
+      }
+    },
+    {
+      "id": "wall-mint",
+      "price": 30,
+      "title": {
+        "en": "Mint wallpaper",
+        "zh": "薄荷绿墙纸"
+      }
+    },
+    {
+      "id": "wall-sky",
+      "price": 30,
+      "title": {
+        "en": "Sky wallpaper",
+        "zh": "天蓝墙纸"
+      }
+    },
+    {
+      "id": "wall-peach",
+      "price": 30,
+      "title": {
+        "en": "Peach wallpaper",
+        "zh": "蜜桃墙纸"
+      }
+    },
+    {
+      "id": "wall-stars",
+      "price": 120,
+      "title": {
+        "en": "Starry wallpaper",
+        "zh": "星空墙纸"
+      }
+    },
+    {
+      "id": "jar-1",
+      "price": 100,
+      "title": {
+        "en": "Treat jar: 1 free treat a day",
+        "zh": "零食罐：每天 1 份免费零食"
+      }
+    },
+    {
+      "id": "jar-2",
+      "price": 250,
+      "title": {
+        "en": "Treat jar: 2 free treats a day",
+        "zh": "零食罐：每天 2 份免费零食"
+      },
+      "requires": "jar-1"
+    },
+    {
+      "id": "jar-3",
+      "price": 500,
+      "title": {
+        "en": "Treat jar: 3 free treats a day",
+        "zh": "零食罐：每天 3 份免费零食"
+      },
+      "requires": "jar-2"
+    },
+    {
+      "id": "feeder",
+      "price": 150,
+      "title": {
+        "en": "Cozy feeder: hunger and mess grow slower",
+        "zh": "舒适喂食器：饿得慢、脏得慢"
+      }
+    },
+    {
+      "id": "mat",
+      "price": 200,
+      "title": {
+        "en": "Play mat: +1 treat every mini-game",
+        "zh": "游戏垫：每局小游戏多 1 份零食"
+      }
+    },
+    {
+      "id": "vitamins",
+      "price": 300,
+      "title": {
+        "en": "Growth snack: grow up twice as fast",
+        "zh": "成长零食：长大快一倍"
+      }
+    }
+  ]
+}
