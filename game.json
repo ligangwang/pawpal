@@ -1,6 +1,6 @@
 {
   "id": "pawpal",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": {
     "en": "Pawpal",
     "zh": "萌宠伙伴"
@@ -10,6 +10,7 @@
     "zh": "孵出小狗、小猫、狐狸或小龙，一天天把它养大：喂食、玩耍、洗澡、抚摸，一起玩小游戏赢零食和金币，还能给它换装、布置房间。"
   },
   "entry": "index.html",
+  "cover": "cover.jpg",
   "badges": [
     {
       "id": "hatched",
