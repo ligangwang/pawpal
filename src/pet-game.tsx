@@ -42,7 +42,7 @@ import { PetScene, type DanceMove } from "./pet-scene";
 import { PetFace } from "./pet-face";
 import { DanceAlong, HideAndSeek, TreatCatch } from "./minigames";
 import { Sound } from "./pet-sound";
-import { useDingn, useLocale } from "./dingn";
+import { useDingn, useLocale, type Translate } from "./dingn";
 
 const NAMES: Record<Species, string[]> = {
   puppy: ["Biscuit", "Waffles", "Pudding", "Buddy", "Maple"],
@@ -71,11 +71,16 @@ const SHELF_NAME: Record<Shelf, string> = {
   pets: "New pets",
 };
 
-type Toast = { id: number; text: string; kind: "coin" | "info" };
+/**
+ * Speech and toasts are kept as how to word them, not as words, so they show
+ * in the new language if the player switches while one is on screen.
+ */
+type Words = (t: Translate) => string;
+type Toast = { id: number; text: Words; kind: "coin" | "info" };
 
 export function PawpalGame() {
   const sdk = useDingn();
-  const { t, locale } = useLocale();
+  const { t } = useLocale();
   const [home, setHome] = useState<Home | null | undefined>(undefined);
   const [owned, setOwned] = useState<Set<string>>(new Set());
   const [adopting, setAdopting] = useState<Species | null>(null);
@@ -83,7 +88,7 @@ export function PawpalGame() {
   const [shelf, setShelf] = useState<Shelf>("outfits");
   const [game, setGame] = useState<Game | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [bubble, setBubble] = useState<{ text: string; at: number } | null>(null);
+  const [bubble, setBubble] = useState<{ text: Words; at: number } | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [soundOn, setSoundOn] = useState(true);
   const [noWebgl, setNoWebgl] = useState(false);
@@ -101,8 +106,8 @@ export function PawpalGame() {
 
   const pet = home ? home.pets[home.active] : null;
 
-  const say = useCallback((text: string) => setBubble({ text, at: Date.now() }), []);
-  const toast = useCallback((text: string, kind: Toast["kind"] = "info") => {
+  const say = useCallback((text: Words) => setBubble({ text, at: Date.now() }), []);
+  const toast = useCallback((text: Words, kind: Toast["kind"] = "info") => {
     const id = Math.random();
     setToasts((list) => [...list.slice(-2), { id, text, kind }]);
     setTimeout(() => setToasts((list) => list.filter((x) => x.id !== id)), 3500);
@@ -153,9 +158,9 @@ export function PawpalGame() {
       if (away) {
         setTimeout(() => {
           sceneRef.current?.act("wave");
-          say(t("I missed you! Welcome back!"));
+          say((t) => t("I missed you! Welcome back!"));
         }, 600);
-      } else if (active.hatched) setTimeout(() => say(t("Hi again!")), 600);
+      } else if (active.hatched) setTimeout(() => say((t) => t("Hi again!")), 600);
     })();
     return () => {
       live = false;
@@ -256,7 +261,7 @@ export function PawpalGame() {
     const result = care(pet, kind, now, perks);
     if (!result.done) {
       sound.play("miss");
-      say(
+      say((t) =>
         t(
           kind === "feed"
             ? "I'm full, thank you!"
@@ -277,7 +282,8 @@ export function PawpalGame() {
       bathe: ["Splish splash!", "So fresh!", "Bubbles!"],
       pet: ["I love you!", "That feels nice!", "Hehe!"],
     };
-    say(t(lines[kind][Math.floor(Math.random() * lines[kind].length)]));
+    const line = lines[kind][Math.floor(Math.random() * lines[kind].length)];
+    say((t) => t(line));
     putPet(result.pet);
     afterCare(result.pet, result.newDay, result.grew);
   };
@@ -287,19 +293,20 @@ export function PawpalGame() {
       setTimeout(() => {
         act("grow");
         sound.play("hatch");
-        say(t(grew === "kid" ? "Look, I grew into a kid!" : "I'm all grown up now!"));
+        say((t) => t(grew === "kid" ? "Look, I grew into a kid!" : "I'm all grown up now!"));
       }, 1600);
     }
     if (!newDay) return;
-    if (perks.jar) toast(t("Your treat jar gave {0} free treats", perks.jar));
+    if (perks.jar) toast((t) => t("Your treat jar gave {0} free treats", perks.jar));
     if (!signedIn) return;
     void earnCoins(sdk, dailyCoins(next.streak)).then((coins) => {
       if (!coins) return;
       sound.play("coin");
       toast(
-        next.streak > 1
-          ? t("Daily visit: +{0} coins ({1}-day streak)", coins, next.streak)
-          : t("Daily visit: +{0} coins", coins),
+        (t) =>
+          next.streak > 1
+            ? t("Daily visit: +{0} coins ({1}-day streak)", coins, next.streak)
+            : t("Daily visit: +{0} coins", coins),
         "coin",
       );
     });
@@ -312,11 +319,11 @@ export function PawpalGame() {
       if (next.hatched) {
         act("hatch");
         sound.play("hatch");
-        setTimeout(() => say(t("Hi! I'm {0}!", next.name)), 500);
+        setTimeout(() => say((t) => t("Hi! I'm {0}!", next.name)), 500);
       } else {
         act("egg");
         sound.play("tap");
-        say(t(["Wiggle!", "Crack!", "Almost…", "Here I come!"][Math.min(3, next.taps - 1)]));
+        say((t) => t(["Wiggle!", "Crack!", "Almost…", "Here I come!"][Math.min(3, next.taps - 1)]));
       }
       putPet(next);
     } else doCare("pet");
@@ -330,16 +337,16 @@ export function PawpalGame() {
     putPet(result.pet);
     act("wave");
     sound.play("happy");
-    say(score > 0 ? t("That was the best! Thank you!") : t("Thanks for playing with me!"));
-    if (result.prize.treats) toast(t("+{0} treats", result.prize.treats));
+    say((t) => (score > 0 ? t("That was the best! Thank you!") : t("Thanks for playing with me!")));
+    if (result.prize.treats) toast((t) => t("+{0} treats", result.prize.treats));
     void badges.earn(roundBadges(kind, score));
     afterCare(result.pet, result.newDay, result.grew);
     if (result.prize.coins && signedIn)
       void earnCoins(sdk, result.prize.coins).then((coins) => {
         if (coins) {
           sound.play("coin");
-          toast(t("+{0} coins", coins), "coin");
-        } else toast(t("That's all the coins for today. Treats are still yours!"));
+          toast((t) => t("+{0} coins", coins), "coin");
+        } else toast((t) => t("That's all the coins for today. Treats are still yours!"));
       });
   };
   const onDanceMove = useCallback(
@@ -353,7 +360,7 @@ export function PawpalGame() {
   // ---- Adopting -----------------------------------------------------------
 
   const adopt = (species: Species, name: string) => {
-    const created = newPet(species, name || NAMES[species][0], Date.now());
+    const created = newPet(species, name || t(NAMES[species][0]), Date.now());
     const h = homeRef.current;
     const pets = h ? [...h.pets, created] : [created];
     const next = { pets, active: pets.length - 1 };
@@ -361,7 +368,7 @@ export function PawpalGame() {
     setHome(next);
     void saveHome(sdk, next);
     setAdopting(null);
-    setTimeout(() => say(t("Tap the egg to help it hatch!")), 400);
+    setTimeout(() => say((t) => t("Tap the egg to help it hatch!")), 400);
   };
 
   const switchTo = (index: number) => {
@@ -370,7 +377,7 @@ export function PawpalGame() {
     const next = { ...h, active: index };
     setHome(next);
     void saveHome(sdk, next);
-    setTimeout(() => say(t("Hi, it's me, {0}!", h.pets[index].name)), 300);
+    setTimeout(() => say((t) => t("Hi, it's me, {0}!", h.pets[index].name)), 300);
   };
 
   // ---- The shop -----------------------------------------------------------
@@ -380,14 +387,14 @@ export function PawpalGame() {
     if (result === "signin") return sdk.requestSignIn();
     if (result === "cancelled") return;
     if (result === "poor")
-      return toast(t("Not enough coins yet. Visit every day and play mini-games to earn more!"));
-    if (result === "locked") return toast(t("Get the one before it first."));
-    if (result === "failed") return toast(t("Something went wrong. Please try again."));
+      return toast((t) => t("Not enough coins yet. Visit every day and play mini-games to earn more!"));
+    if (result === "locked") return toast((t) => t("Get the one before it first."));
+    if (result === "failed") return toast((t) => t("Something went wrong. Please try again."));
     setOwned((set) => new Set(set).add(item.id));
     setPreview(null);
     sound.play("coin");
     act("buy");
-    say(t("Thank you! I love it!"));
+    say((t) => t("Thank you! I love it!"));
     if (pet) {
       if (item.shelf === "outfits") putPet({ ...pet, outfit: item.id });
       if (item.shelf === "decor") putPet({ ...pet, decor: [...pet.decor, item.id] });
@@ -464,7 +471,7 @@ export function PawpalGame() {
           style={bubblePos ? { left: bubblePos.x, top: bubblePos.y } : undefined}
           role="status"
         >
-          {bubble.text}
+          {bubble.text(t)}
         </div>
       )}
 
@@ -645,7 +652,7 @@ export function PawpalGame() {
               return (
                 <li key={item.id} className={`item${preview === item.id ? " trying" : ""}`}>
                   <ItemIcon id={item.id} />
-                  <span className="item-name">{locale === "zh-CN" ? item.title.zh : item.title.en}</span>
+                  <span className="item-name">{t(item.title.en)}</span>
                   <span className="item-actions">
                     {has ? (
                       item.shelf === "helpers" ? (
@@ -712,7 +719,7 @@ export function PawpalGame() {
         {toasts.map((x) => (
           <div key={x.id} className={`toast toast-${x.kind}`}>
             {x.kind === "coin" && <span className="coin" aria-hidden="true" />}
-            {x.text}
+            {x.text(t)}
           </div>
         ))}
       </div>
@@ -811,10 +818,14 @@ function Adopt({
   const sdk = useDingn();
   const first = initial ?? SPECIES.find((s) => !raised.includes(s.id))?.id ?? "puppy";
   const [species, setSpecies] = useState<Species>(first);
-  const [name, setName] = useState(() => t(NAMES[first][0]));
+  // A suggested name follows the language until the player types their own.
+  const [suggested, setSuggested] = useState(NAMES[first][0]);
+  const [typed, setTyped] = useState<string | null>(null);
+  const name = typed ?? t(suggested);
   const choose = (s: Species) => {
     setSpecies(s);
-    setName(t(NAMES[s][Math.floor(Math.random() * NAMES[s].length)]));
+    setSuggested(NAMES[s][Math.floor(Math.random() * NAMES[s].length)]);
+    setTyped(null);
   };
   const entry = SPECIES.find((s) => s.id === species)!;
   const unlocked = !entry.shop || owned.has(entry.shop);
@@ -864,7 +875,7 @@ function Adopt({
           >
             <label>
               {t("Name")}
-              <input value={name} maxLength={MAX_NAME} onChange={(e) => setName(e.target.value)} />
+              <input value={name} maxLength={MAX_NAME} onChange={(e) => setTyped(e.target.value)} />
             </label>
             <button className="button" type="submit">
               {t("Choose this egg")}

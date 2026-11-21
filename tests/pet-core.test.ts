@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import {
   care,
   dailyCoins,
@@ -177,14 +177,4 @@ test("game.json: badges, shop and limits", () => {
     ...roundBadges("dance", 99),
   ];
   assert.deepEqual(new Set(used), badgeIds);
-});
-
-test("every UI string has a Chinese translation", () => {
-  const zh = JSON.parse(readFileSync("src/zh-CN.json", "utf8"));
-  const missing: string[] = [];
-  for (const file of readdirSync("src").filter((f) => f.endsWith(".tsx"))) {
-    const src = readFileSync(`src/${file}`, "utf8");
-    for (const m of src.matchAll(/\bt\(\s*"([^"]+)"/g)) if (!zh[m[1]]) missing.push(m[1]);
-  }
-  assert.deepEqual(missing, []);
 });

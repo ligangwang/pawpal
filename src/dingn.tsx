@@ -1,5 +1,6 @@
 // The game's link to dingn: the SDK connection, shared through React context,
-// plus the translations Pawpal needs.
+// plus the translations Pawpal needs. The language can change while playing
+// (dingn.onLanguage), so it lives in state and everything re-renders in it.
 import {
   createContext,
   useContext,
@@ -7,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { DingnGame } from "../sdk/dingn-sdk.js";
+import type { DingnGame, Locale } from "../sdk/dingn-sdk.js";
 import { translate } from "./i18n";
 
 const DingnContext = createContext<DingnGame | null>(null);
@@ -19,11 +20,17 @@ export function DingnProvider({
   sdk: DingnGame;
   children: ReactNode;
 }) {
-  // Re-render when the player signs in or out.
+  // Re-render when the player signs in or out, or switches language.
   const [player, setPlayer] = useState(sdk.player);
+  const [locale, setLocale] = useState<Locale>(sdk.locale);
   useEffect(() => sdk.onPlayer(setPlayer), [sdk]);
+  // Old dingn builds have no onLanguage.
+  useEffect(() => sdk.onLanguage?.(setLocale), [sdk]);
+  useEffect(() => {
+    if (typeof document !== "undefined") document.documentElement.lang = locale;
+  }, [locale]);
   return (
-    <DingnContext.Provider value={{ ...sdk, player }}>
+    <DingnContext.Provider value={{ ...sdk, player, locale }}>
       {children}
     </DingnContext.Provider>
   );
@@ -35,12 +42,14 @@ export function useDingn() {
   return sdk;
 }
 
-export function useLocale() {
+/** Translates `text`, then fills {0}, {1}... with `args`. */
+export type Translate = (text: string, ...args: (string | number)[]) => string;
+
+export function useLocale(): { locale: Locale; t: Translate } {
   const { locale } = useDingn();
   return {
     locale,
-    /** Translates `text`, then fills {0}, {1}... with `args`. */
-    t: (text: string, ...args: (string | number)[]) =>
+    t: (text, ...args) =>
       translate(text, locale).replace(/\{(\d+)\}/g, (m, n) =>
         Number(n) < args.length ? String(args[Number(n)]) : m,
       ),

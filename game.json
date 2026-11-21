@@ -1,14 +1,33 @@
 {
   "id": "pawpal",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "title": {
     "en": "Pawpal",
-    "zh": "萌宠伙伴"
+    "zh": "萌宠伙伴",
+    "es": "Pawpal",
+    "pt-BR": "Pawpal",
+    "id": "Pawpal",
+    "ja": "Pawpal",
+    "ko": "Pawpal"
   },
   "description": {
     "en": "Hatch a puppy, kitten, fox or dragon and raise it day by day: feed, play, bathe and pet it, play mini-games together for treats and coins, and dress it up and decorate its room.",
-    "zh": "孵出小狗、小猫、狐狸或小龙，一天天把它养大：喂食、玩耍、洗澡、抚摸，一起玩小游戏赢零食和金币，还能给它换装、布置房间。"
+    "zh": "孵出小狗、小猫、狐狸或小龙，一天天把它养大：喂食、玩耍、洗澡、抚摸，一起玩小游戏赢零食和金币，还能给它换装、布置房间。",
+    "es": "Incuba un perrito, un gatito, un zorro o un dragón y críalo día a día: dale de comer, juega con él, báñalo y acarícialo, jueguen juntos minijuegos para ganar golosinas y monedas, y vístelo y decora su habitación.",
+    "pt-BR": "Choque um cachorrinho, gatinho, raposa ou dragão e cuide dele dia após dia: alimente, brinque, dê banho e faça carinho, jogue minijogos juntos para ganhar petiscos e moedas, e vista seu bichinho e decore o quarto dele.",
+    "id": "Tetaskan anak anjing, anak kucing, rubah, atau naga dan rawat setiap hari: beri makan, ajak main, mandikan, dan elus, main minigame bersama untuk dapat camilan dan koin, lalu dandani dan hias kamarnya.",
+    "ja": "こいぬ、こねこ、キツネ、ドラゴンのたまごをかえして、毎日お世話しましょう。ごはん、あそび、おふろ、なでなで。いっしょにミニゲームをしておやつやコインを集め、きせかえやおへやのもようがえも楽しめます。",
+    "ko": "강아지, 아기 고양이, 여우, 드래곤을 부화시켜 매일 돌봐요. 밥 주기, 놀기, 목욕, 쓰다듬기를 하고, 함께 미니게임을 해서 간식과 코인을 모으고, 옷을 입히고 방도 꾸며요."
   },
+  "languages": [
+    "en",
+    "zh-CN",
+    "es",
+    "pt-BR",
+    "id",
+    "ja",
+    "ko"
+  ],
   "entry": "index.html",
   "cover": "cover.jpg",
   "badges": [

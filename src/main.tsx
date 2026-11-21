@@ -6,7 +6,6 @@ import { DingnProvider } from "./dingn";
 import { PawpalGame } from "./pet-game";
 
 const sdk = await connect();
-document.documentElement.lang = sdk.locale;
 createRoot(document.getElementById("root")!).render(
   <DingnProvider sdk={sdk}>
     <PawpalGame />

@@ -27,6 +27,8 @@ vi.mock("../src/pet-scene", () => ({
 }));
 
 let stored: Map<string, unknown>;
+// The language listener the game subscribed with, so a test can switch language.
+let languageListener: ((locale: Locale) => void) | null;
 let owned: Set<string>;
 const calls = {
   save: vi.fn(),
@@ -43,6 +45,15 @@ function fakeSdk(signedIn: boolean, locale: Locale = "en"): DingnGame {
     player: { signedIn, name: signedIn ? "Ada" : "", avatar: "" },
     embedded: true,
     onPlayer: () => () => {},
+    onLanguage: (fn) => {
+      languageListener = fn;
+      return () => {
+        if (languageListener === fn) languageListener = null;
+      };
+    },
+    challenge: null,
+    challengeLink: async () => "",
+    roundEnded() {},
     storage: {
       get: async (k) => (stored.get(k) as never) ?? null,
       set: async (k, v) => void stored.set(k, v),
@@ -93,6 +104,7 @@ const savedPet = (extra: object = {}) => ({
 
 beforeEach(() => {
   stored = new Map();
+  languageListener = null;
   owned = new Set();
   mocks.acts = [];
   calls.save.mockReset().mockResolvedValue(undefined);
@@ -183,4 +195,75 @@ test("speaks Chinese", async () => {
   expect(await screen.findByRole("button", { name: "喂食" })).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "商店" }));
   expect(screen.getByText("金色王冠")).toBeTruthy();
+});
+
+test("speaks every language it lists", async () => {
+  const feed: Record<string, string> = {
+    en: "Feed",
+    "zh-CN": "喂食",
+    es: "Dar de comer",
+    "pt-BR": "Alimentar",
+    id: "Beri makan",
+    ja: "ごはん",
+    ko: "밥 주기",
+  };
+  expect(Object.keys(feed).sort()).toEqual([...manifest.languages].sort());
+  for (const [locale, word] of Object.entries(feed)) {
+    stored.set("home", savedPet());
+    play(fakeSdk(false, locale));
+    expect(await screen.findByRole("button", { name: word })).toBeTruthy();
+    cleanup();
+  }
+});
+
+test("an unknown language shows English, not Chinese", async () => {
+  stored.set("home", savedPet());
+  play(fakeSdk(false, "fr"));
+  expect(await screen.findByRole("button", { name: "Feed" })).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Shop" }));
+  expect(screen.getByText("Golden crown")).toBeTruthy();
+});
+
+test("switching language while playing keeps the game going", async () => {
+  stored.set("home", savedPet());
+  const { unmount } = play(fakeSdk(true));
+  fireEvent.click(await screen.findByRole("button", { name: "Feed" }));
+  await waitFor(() => expect(calls.earn).toHaveBeenCalledWith(5));
+  expect(await screen.findByText("Daily visit: +5 coins")).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Shop" }));
+  expect(screen.getByText("Golden crown")).toBeTruthy();
+  const scene = mocks.scene;
+  const saves = calls.save.mock.calls.length;
+  const home = stored.get("home");
+
+  act(() => languageListener!("es"));
+  // The open shop, the toast and the buttons all show Spanish now.
+  expect(screen.getByText("Corona dorada")).toBeTruthy();
+  expect(screen.getByText("Visita diaria: +5 monedas")).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Dar de comer" })).toBeTruthy();
+  expect(document.documentElement.lang).toBe("es");
+  // Same pet, same scene, nothing reset or re-saved.
+  expect(screen.getByRole("heading", { name: "Biscuit" })).toBeTruthy();
+  expect(mocks.scene).toBe(scene);
+  expect(calls.save.mock.calls.length).toBe(saves);
+  expect(stored.get("home")).toBe(home);
+
+  act(() => languageListener!("ko"));
+  expect(screen.getByText("황금 왕관")).toBeTruthy();
+  act(() => languageListener!("en"));
+  expect(screen.getByText("Golden crown")).toBeTruthy();
+
+  unmount();
+  expect(languageListener).toBeNull();
+});
+
+test("the suggested pet name follows the language until the player types one", async () => {
+  play(fakeSdk(false));
+  const name = (await screen.findByLabelText("Name")) as HTMLInputElement;
+  expect(name.value).toBe("Biscuit");
+  act(() => languageListener!("pt-BR"));
+  expect((screen.getByLabelText("Nome") as HTMLInputElement).value).toBe("Biscoito");
+  fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "Bolinha" } });
+  act(() => languageListener!("ja"));
+  expect((screen.getByLabelText("なまえ") as HTMLInputElement).value).toBe("Bolinha");
 });

@@ -13,7 +13,14 @@ Notes for AI coding agents working on Pawpal.
   already has.
 - Save with `sdk.storage` / `sdk.progress`, never `localStorage` or cookies,
   which the sandbox blocks. Keep every URL relative (`base: "./"`).
-- UI strings go through `t()` with translations in `src/zh-CN.json`.
+- UI strings go through `t()` with translations in `src/locales/<lang>.json`,
+  one pack per language in `game.json`'s `languages` other than English
+  (zh-CN, es, pt-BR, id, ja, ko). Keys are the English text; add every new
+  string to every pack (a test checks keys and `{0}` placeholders match).
+  Shop item names are translated there too: dingn keeps only `en`/`zh` of a
+  shop or badge title. The player can switch language mid-game
+  (`sdk.onLanguage`), so keep translated text out of saved state and render it
+  with `t()` instead.
 - All art is drawn in code (three.js shapes in `src/pet-scene.ts`, SVG in
   `src/pet-face.tsx`), so the game ships no model or image files. Keep new
   art original.
